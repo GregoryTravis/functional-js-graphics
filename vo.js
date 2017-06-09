@@ -44,13 +44,23 @@ function scale(f, s) {
   }
 }
 
+function pixmul(a, b) {
+  return [a[0]*b[0], a[1]*b[1], a[2]*b[2]];
+}
+
+function mul(fa, fb) {
+  return function(x, y) {
+    return pixmul(fa(x, y), fb(x, y));
+  }
+}
+
 function main() {
   init();
 
   const width = 300;
   const height = width;
 
-  gen(scale(gs(check), 8), width, height);
+  gen(mul(coly, scale(gs(check), 8)), width, height);
 }
 
 main();
