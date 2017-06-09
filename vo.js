@@ -1,6 +1,14 @@
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+
+function init() {
+  ctx.fillStyle = "#9ea7b8";
+  const h = parseInt(document.getElementById("myCanvas").getAttribute("height"));
+  const w = parseInt(document.getElementById("myCanvas").getAttribute("width"));
+  ctx.fillRect(0, 0, w, h);
+}
+
 function gen(f, width, height) {
-  const c = document.getElementById("myCanvas");
-  const ctx = c.getContext("2d");
   const imgData = ctx.createImageData(width, height);
   for (var x = 0; x < width; x++) {
     for (var y = 0; y < width; y++) {
@@ -24,20 +32,29 @@ function check(x, y) {
 }
 
 function check2(x, y) {
-  return (x < .5 != y < .5) ? 1 : 0
+  return ((Math.floor(x)%2)==0) != ((Math.floor(y)%2)==0) ? 1 : 0;
 }
 
 function gs(f) {
   return function(x, y) {
     const gsv = f(x, y);
-    return [gsv, gsv, gsv]
+    return [gsv, gsv, gsv];
+  }
+}
+
+function scale(f, s) {
+  return function(x, y) {
+    return f(s*x, s*y);
   }
 }
 
 function main() {
-  //gen(coly, 300, 300);
-  //gen(check, 300, 300);
-  gen(gs(check2), 300, 300);
+  init();
+
+  const width = 300;
+  const height = width;
+
+  gen(scale(gs(check2), 8), width, height);
 }
 
 main();
