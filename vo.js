@@ -28,10 +28,6 @@ function coly(x, y) {
 }
 
 function check(x, y) {
-  return (x < .5 != y < .5) ? [1, 1, 1] : [0, 0, ];
-}
-
-function check2(x, y) {
   return ((Math.floor(x)%2)==0) != ((Math.floor(y)%2)==0) ? 1 : 0;
 }
 
@@ -54,7 +50,7 @@ function main() {
   const width = 300;
   const height = width;
 
-  gen(scale(gs(check2), 8), width, height);
+  gen(scale(gs(check), 8), width, height);
 }
 
 main();
