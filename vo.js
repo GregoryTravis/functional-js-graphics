@@ -54,10 +54,19 @@ function gs(f) {
   }
 }
 
-function scale(f, s) {
+function coordtrans(f, cf) {
   return function(x, y) {
-    return f(s*x, s*y);
+    const txy = cf(x, y);
+    return f(txy[0], txy[1]);
   }
+}
+
+function coordtranso(f, cf) {
+  return coordtrans(f, (x, y) => [cf(x), cf(y)]);
+}
+
+function scale(f, s) {
+  return coordtranso(f, (x) => s*x)
 }
 
 function pixmul(a, b) {
@@ -70,14 +79,18 @@ function mul(fa, fb) {
   }
 }
 
-function rot(f, ang) {
-  return function(x, y) {
+function rotxy(ang) {
+  return function (x, y) {
     const c = Math.cos(ang);
     const s = Math.sin(ang);
     const rx = c*x + s*y;
     const ry = -s*x + c*y;
-    return f(rx, ry);
+    return [rx, ry];
   }
+}
+
+function rot(f, ang) {
+  return coordtrans(f, rotxy(ang));
 }
 
 function main() {
@@ -86,8 +99,8 @@ function main() {
   const width = 300;
   const height = width;
 
-  gen(rot(mul(coly, scale(gs(check), 8)), Math.PI/8), width, height);
   //anim((t) => rot(mul(coly, scale(gs(check), 8)), t*.25*Math.PI), width, height);
+  gen(rot(mul(coly, scale(gs(check), 8)), Math.PI/8), width, height);
 }
 
 main();
