@@ -1,11 +1,22 @@
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
+const fps = 20;
+
 function init() {
   ctx.fillStyle = "#9ea7b8";
   const h = parseInt(document.getElementById("myCanvas").getAttribute("height"));
   const w = parseInt(document.getElementById("myCanvas").getAttribute("width"));
   ctx.fillRect(0, 0, w, h);
+}
+
+var startTime = null;
+function time() {
+  const now = new Date().getTime();
+  if (startTime == null) {
+    startTime = now;
+  }
+  return (now - startTime) / 1000;
 }
 
 function gen(f, width, height) {
@@ -21,6 +32,11 @@ function gen(f, width, height) {
     }
   }
   ctx.putImageData(imgData, 10, 10);
+}
+
+function anim(tf, width, height) {
+  gen(tf(time()), width, height);
+  setTimeout(() => anim(tf, width, height), 1000 * (1.0 / fps));
 }
 
 function coly(x, y) {
@@ -71,6 +87,7 @@ function main() {
   const height = width;
 
   gen(rot(mul(coly, scale(gs(check), 8)), Math.PI/8), width, height);
+  //anim((t) => rot(mul(coly, scale(gs(check), 8)), t*.25*Math.PI), width, height);
 }
 
 main();
