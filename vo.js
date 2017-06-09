@@ -93,6 +93,20 @@ function rot(f, ang) {
   return coordtrans(f, rotxy(ang));
 }
 
+function lenvec2(x, y) {
+  return Math.sqrt(x*x + y*y);
+}
+
+function swirl(f) {
+  return coordtrans(f, function(x, y) {
+    return rotxy(lenvec2(x, y)*3)(x, y);
+  })
+}
+
+function trans(f, dx, dy) {
+  return coordtrans(f, (x, y) => [x+dx, y+dy]);
+}
+
 function main() {
   init();
 
@@ -100,7 +114,14 @@ function main() {
   const height = width;
 
   //anim((t) => rot(mul(coly, scale(gs(check), 8)), t*.25*Math.PI), width, height);
-  gen(rot(mul(coly, scale(gs(check), 8)), Math.PI/8), width, height);
+  //gen(rot(mul(coly, scale(gs(check), 8)), Math.PI/8), width, height);
+
+  var f = scale(gs(check), 8);
+  f = swirl(f);
+  f = scale(f, 2);
+  f = trans(f, -.5, -.5);
+
+  gen(f, width, height);
 }
 
 main();
