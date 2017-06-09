@@ -54,13 +54,23 @@ function mul(fa, fb) {
   }
 }
 
+function rot(f, ang) {
+  return function(x, y) {
+    const c = Math.cos(ang);
+    const s = Math.sin(ang);
+    const rx = c*x + s*y;
+    const ry = -s*x + c*y;
+    return f(rx, ry);
+  }
+}
+
 function main() {
   init();
 
   const width = 300;
   const height = width;
 
-  gen(mul(coly, scale(gs(check), 8)), width, height);
+  gen(rot(mul(coly, scale(gs(check), 8)), Math.PI/8), width, height);
 }
 
 main();
