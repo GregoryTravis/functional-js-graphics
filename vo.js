@@ -69,8 +69,16 @@ function scale(f, s) {
   return coordtranso(f, (x) => s*x)
 }
 
+function pixadd(a, b) {
+  return [a[0]+b[0], a[1]+b[1], a[2]+b[2]];
+}
+
 function pixmul(a, b) {
   return [a[0]*b[0], a[1]*b[1], a[2]*b[2]];
+}
+
+function pixscale(a, s) {
+  return [a[0]*s, a[1]*s, a[2]*s];
 }
 
 function mul(fa, fb) {
@@ -107,6 +115,18 @@ function trans(f, dx, dy) {
   return coordtrans(f, (x, y) => [x+dx, y+dy]);
 }
 
+function aa(f, width, height) {
+  const halfpixx = 1/width;
+  const halfpixy = 1/height;
+  return function(x, y) {
+    return pixscale(
+      pixadd(
+        pixadd(f(x-halfpixx, y-halfpixy), f(x+halfpixx, y-halfpixy)),
+        pixadd(f(x+halfpixx, y+halfpixy), f(x-halfpixx, y+halfpixy))),
+      .25);
+  }
+}
+
 function main() {
   init();
 
@@ -120,6 +140,7 @@ function main() {
   f = swirl(f, 1);
   f = scale(f, 2);
   f = trans(f, -.5, -.5);
+  //f = aa(f, width, height);
 
   gen(f, width, height);
 }
