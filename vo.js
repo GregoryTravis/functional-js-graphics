@@ -41,12 +41,12 @@ function anim(tf, width, height) {
 
 const coly = (x, y) => [x, y, x*y]
 
-const check = (x, y) => ((Math.floor(x)%2)==0) != ((Math.floor(y)%2)==0) ? 1 : 0
-
 const gs = (f) => (x, y) => {
   const gsv = f(x, y);
   return [gsv, gsv, gsv];
 }
+
+const check = gs((x, y) => ((Math.floor(x)%2)==0) != ((Math.floor(y)%2)==0) ? 1 : 0)
 
 const coordtrans = (f, cf) => (x, y) => {
   const txy = cf(x, y);
@@ -99,10 +99,7 @@ function main() {
   const width = 300;
   const height = width;
 
-  //anim((t) => rot(mul(coly, scale(gs(check), 8)), t*.25*Math.PI), width, height);
-  //gen(rot(mul(coly, scale(gs(check), 8)), Math.PI/8), width, height);
-
-  var f = scale(gs(check), 8);
+  var f = scale(check, 8);
   f = mul(f, coly);
   f = swirl(f, 1);
   f = scale(f, 2);
