@@ -39,53 +39,31 @@ function anim(tf, width, height) {
   setTimeout(() => anim(tf, width, height), 1000 * (1.0 / fps));
 }
 
-function coly(x, y) {
-  return [x, y, x*y];
+const coly = (x, y) => [x, y, x*y]
+
+const check = (x, y) => ((Math.floor(x)%2)==0) != ((Math.floor(y)%2)==0) ? 1 : 0
+
+const gs = (f) => (x, y) => {
+  const gsv = f(x, y);
+  return [gsv, gsv, gsv];
 }
 
-function check(x, y) {
-  return ((Math.floor(x)%2)==0) != ((Math.floor(y)%2)==0) ? 1 : 0;
+const coordtrans = (f, cf) => (x, y) => {
+  const txy = cf(x, y);
+  return f(txy[0], txy[1]);
 }
 
-function gs(f) {
-  return function(x, y) {
-    const gsv = f(x, y);
-    return [gsv, gsv, gsv];
-  }
-}
+const coordtranso = (f, cf) => coordtrans(f, (x, y) => [cf(x), cf(y)])
 
-function coordtrans(f, cf) {
-  return function(x, y) {
-    const txy = cf(x, y);
-    return f(txy[0], txy[1]);
-  }
-}
+const scale = (f, s) => coordtranso(f, (x) => s*x)
 
-function coordtranso(f, cf) {
-  return coordtrans(f, (x, y) => [cf(x), cf(y)]);
-}
+const  pixadd = (a, b) => [a[0]+b[0], a[1]+b[1], a[2]+b[2]]
 
-function scale(f, s) {
-  return coordtranso(f, (x) => s*x)
-}
+const pixmul = (a, b) => [a[0]*b[0], a[1]*b[1], a[2]*b[2]]
 
-function pixadd(a, b) {
-  return [a[0]+b[0], a[1]+b[1], a[2]+b[2]];
-}
+const pixscale = (a, s) => [a[0]*s, a[1]*s, a[2]*s]
 
-function pixmul(a, b) {
-  return [a[0]*b[0], a[1]*b[1], a[2]*b[2]];
-}
-
-function pixscale(a, s) {
-  return [a[0]*s, a[1]*s, a[2]*s];
-}
-
-function mul(fa, fb) {
-  return function(x, y) {
-    return pixmul(fa(x, y), fb(x, y));
-  }
-}
+const mul = (fa, fb) => (x, y) => pixmul(fa(x, y), fb(x, y))
 
 const rotxy = (ang, x, y) => {
   const c = Math.cos(ang);
@@ -125,6 +103,7 @@ function main() {
   //gen(rot(mul(coly, scale(gs(check), 8)), Math.PI/8), width, height);
 
   var f = scale(gs(check), 8);
+  f = mul(f, coly);
   f = swirl(f, 1);
   f = scale(f, 2);
   f = trans(f, -.5, -.5);
