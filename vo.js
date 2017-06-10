@@ -87,33 +87,21 @@ function mul(fa, fb) {
   }
 }
 
-function rotxy(ang) {
-  return function (x, y) {
-    const c = Math.cos(ang);
-    const s = Math.sin(ang);
-    const rx = c*x + s*y;
-    const ry = -s*x + c*y;
-    return [rx, ry];
-  }
+const rotxy = (ang, x, y) => {
+  const c = Math.cos(ang);
+  const s = Math.sin(ang);
+  const rx = c*x + s*y;
+  const ry = -s*x + c*y;
+  return [rx, ry];
 }
 
-function rot(f, ang) {
-  return coordtrans(f, rotxy(ang));
-}
+const rot = (f, ang) => coordtrans(f, (ang) => rotxy(ang, x, y))
 
-function lenvec2(x, y) {
-  return Math.sqrt(x*x + y*y);
-}
+const lenvec2 = (x, y) => Math.sqrt(x*x + y*y)
 
-function swirl(f, rm) {
-  return coordtrans(f, function(x, y) {
-    return rotxy(lenvec2(x, y)*rm)(x, y);
-  })
-}
+const swirl = (f, rm) => coordtrans(f, (x, y) => rotxy(lenvec2(x, y)*rm, x, y))
 
-function trans(f, dx, dy) {
-  return coordtrans(f, (x, y) => [x+dx, y+dy]);
-}
+const trans = (f, dx, dy) => coordtrans(f, (x, y) => [x+dx, y+dy])
 
 function aa(f, width, height) {
   const halfpixx = 1/width;
