@@ -97,9 +97,9 @@ function lenvec2(x, y) {
   return Math.sqrt(x*x + y*y);
 }
 
-function swirl(f) {
+function swirl(f, rm) {
   return coordtrans(f, function(x, y) {
-    return rotxy(lenvec2(x, y)*3)(x, y);
+    return rotxy(lenvec2(x, y)*rm)(x, y);
   })
 }
 
@@ -117,7 +117,7 @@ function main() {
   //gen(rot(mul(coly, scale(gs(check), 8)), Math.PI/8), width, height);
 
   var f = scale(gs(check), 8);
-  f = swirl(f);
+  f = swirl(f, 1);
   f = scale(f, 2);
   f = trans(f, -.5, -.5);
 
