@@ -81,6 +81,14 @@ const swirl = (f, rm) => coordtrans(f, (x, y) => rotxy(lenvec2(x, y)*rm, x, y))
 
 const trans = (f, dx, dy) => coordtrans(f, (x, y) => [x+dx, y+dy])
 
+const col4list = [
+  [1, 0, 0],
+  [0, 1, 0],
+  [0, 0, 1],
+  [0, 1, 1]
+];
+const col4 = trans(scale((x, y) => col4list[(x<0?1:0)*2 + (y<0?1:0)], .5), -.5, -.5)
+
 function aa(f, width, height) {
   const halfpixx = 1/width;
   const halfpixy = 1/height;
@@ -112,10 +120,18 @@ function main() {
   var f2 = rot(scale(check, 4), Math.PI/8);
   f = hsplice(f, f2);
   f = trans(f, -.5, -.5);
+  //f = rot(f, Math.PI/4);
+
+  f = col4;
+  //f = coordtrans(f, (x, y) => [x, y+.125*Math.cos(x*Math.PI*4)])
+  //f = coordtrans(f, (x, y) => [x+.125*Math.cos(y*Math.PI*4), y])
+  f = coordtrans(f, (x, y) => [x+.125*Math.cos(y*Math.PI*4), y+.125*Math.cos(x*Math.PI*4)])
 
   gen(f, width, height);
-
-  const a = (t) => trans(hsplice(rot(scale(check, 4), t), rot(scale(check, 7), -2*t)), -.5, -.5)
+  //const a = (t) => trans(hsplice(rot(scale(check, 4), t), rot(scale(check, 7), -2*t)), -.5, -.5)
+  //const a = (t) => trans(rot(trans(f, .5, .5), t), -.5, -.5);
+  // sloshy
+  //a = (t) => coordtrans(f, (x, y) => [x+Math.sin(t*6)*.125*Math.cos(y*Math.PI*4), y+Math.cos(t*5)*.125*Math.cos(x*Math.PI*4)])
   //anim(a, width, height);
 }
 
