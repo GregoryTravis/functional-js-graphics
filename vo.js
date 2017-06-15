@@ -73,7 +73,7 @@ const rotxy = (ang, x, y) => {
   return [rx, ry];
 }
 
-const rot = (f, ang) => coordtrans(f, (ang) => rotxy(ang, x, y))
+const rot = (f, ang) => coordtrans(f, (x, y) => rotxy(ang, x, y))
 
 const lenvec2 = (x, y) => Math.sqrt(x*x + y*y)
 
@@ -93,6 +93,8 @@ function aa(f, width, height) {
   }
 }
 
+const hsplice = (a, b) => (x, y) => (y > 0 ? a : b)(x, y)
+
 function main() {
   init();
 
@@ -106,7 +108,15 @@ function main() {
   f = trans(f, -.5, -.5);
   //f = aa(f, width, height);
 
+  //f = scale(check, 4);
+  var f2 = rot(scale(check, 4), Math.PI/8);
+  f = hsplice(f, f2);
+  f = trans(f, -.5, -.5);
+
   gen(f, width, height);
+
+  const a = (t) => trans(hsplice(rot(scale(check, 4), t), rot(scale(check, 7), -2*t)), -.5, -.5)
+  //anim(a, width, height);
 }
 
 main();
