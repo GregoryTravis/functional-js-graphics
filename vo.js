@@ -31,12 +31,24 @@ function gen(f, width, height) {
       imgData.data[offset+3] = 255;
     }
   }
+  return imgData;
+}
+
+function show(f, width, height) {
+  const imgData = gen(f, width, height);
   ctx.putImageData(imgData, 10, 10);
 }
 
 function anim(tf, width, height) {
-  gen(tf(time()), width, height);
+  show(tf(time()), width, height);
   setTimeout(() => anim(tf, width, height), 1000 * (1.0 / fps));
+}
+
+function feedback(f, ftr, width, height) {
+  show(f, width, height);
+  const im = gen(f, width, height);
+  f = ftr(imgfun(im, width, height));
+  setTimeout(() => feedback(f, ftr, width, height));
 }
 
 const coly = (x, y) => [x, y, x*y]
@@ -103,6 +115,16 @@ function aa(f, width, height) {
 
 const hsplice = (a, b) => (x, y) => (y > 0 ? a : b)(x, y)
 
+const imgfun = (imgData, width, height) => (x, y) => {
+  const ix = Math.floor(x*width);
+  const iy = Math.floor(y*height);
+  const offset = (iy * width + ix) * 4;
+  return [
+    imgData.data[offset+0],
+    imgData.data[offset+1],
+    imgData.data[offset+2]];
+}
+
 function main() {
   init();
 
@@ -125,9 +147,13 @@ function main() {
   f = col4;
   //f = coordtrans(f, (x, y) => [x, y+.125*Math.cos(x*Math.PI*4)])
   //f = coordtrans(f, (x, y) => [x+.125*Math.cos(y*Math.PI*4), y])
-  f = coordtrans(f, (x, y) => [x+.125*Math.cos(y*Math.PI*4), y+.125*Math.cos(x*Math.PI*4)])
+  //f = coordtrans(f, (x, y) => [x+.125*Math.cos(y*Math.PI*4), y+.125*Math.cos(x*Math.PI*4)])
+  //show(f, width, height);
 
-  gen(f, width, height);
+  const whoa = (f) => trans(rot(trans(f, .5, .5), Math.PI/17), -.5, -.5);
+  //whoa = (f) => rot(f, Math.PI/16)
+  feedback(col4, whoa, width, height);
+
   //const a = (t) => trans(hsplice(rot(scale(check, 4), t), rot(scale(check, 7), -2*t)), -.5, -.5)
   //const a = (t) => trans(rot(trans(f, .5, .5), t), -.5, -.5);
   // sloshy
