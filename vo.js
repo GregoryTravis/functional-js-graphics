@@ -39,16 +39,40 @@ function show(f, width, height) {
   ctx.putImageData(imgData, 10, 10);
 }
 
+var paused = false;
+var pausedCBs = [];
+function setupPause() {
+  $(document).keypress(function(e) {
+    console.log(e.keyCode);
+    if (e.keyCode == 32) {
+      paused = !paused;
+      if (!paused) {
+        _.map(pausedCBs, (cb) => setTimeout(cb));
+        pausedCBs = [];
+      }
+    }
+    return false;
+  });
+}
+
+function setTimeoutOrPause(cb) {
+  if (paused) {
+    pausedCBs.push(cb);
+  } else {
+    setTimeout(cb);
+  }
+}
+
 function anim(tf, width, height) {
   show(tf(time()), width, height);
-  setTimeout(() => anim(tf, width, height), 1000 * (1.0 / fps));
+  setTimeoutOrPause(() => anim(tf, width, height), 1000 * (1.0 / fps));
 }
 
 function feedback(f, ftr, width, height) {
   show(f, width, height);
   const im = gen(f, width, height);
   f = ftr(imgfun(im, width, height));
-  setTimeout(() => feedback(f, ftr, width, height));
+  setTimeoutOrPause(() => feedback(f, ftr, width, height));
 }
 
 const coly = (x, y) => [x, y, x*y]
@@ -127,6 +151,7 @@ const imgfun = (imgData, width, height) => (x, y) => {
 
 function main() {
   init();
+  setupPause();
 
   const width = 300;
   const height = width;
@@ -148,7 +173,7 @@ function main() {
   //f = coordtrans(f, (x, y) => [x, y+.125*Math.cos(x*Math.PI*4)])
   //f = coordtrans(f, (x, y) => [x+.125*Math.cos(y*Math.PI*4), y])
   //f = coordtrans(f, (x, y) => [x+.125*Math.cos(y*Math.PI*4), y+.125*Math.cos(x*Math.PI*4)])
-  //show(f, width, height);
+  show(f, width, height);
 
   const whoa = (f) => trans(rot(trans(f, .5, .5), Math.PI/17), -.5, -.5);
   //whoa = (f) => rot(f, Math.PI/16)
