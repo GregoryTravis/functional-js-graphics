@@ -71,7 +71,7 @@ function anim(tf, width, height) {
 function feedback(f, ftr, width, height) {
   show(f, width, height);
   const im = gen(f, width, height);
-  f = ftr(imgfun(im, width, height));
+  f = ftr(imgfun(im, width, height), time());
   setTimeoutOrPause(() => feedback(f, ftr, width, height));
 }
 
@@ -175,7 +175,7 @@ function main() {
   //f = coordtrans(f, (x, y) => [x+.125*Math.cos(y*Math.PI*4), y+.125*Math.cos(x*Math.PI*4)])
   show(f, width, height);
 
-  const whoa = (f) => trans(rot(trans(f, .5, .5), Math.PI/17), -.5, -.5);
+  const whoa = (f, t) => trans(rot(trans(f, .5, .5), Math.PI/17*(1+t/5)), -.5, -.5);
   //whoa = (f) => rot(f, Math.PI/16)
   feedback(col4, whoa, width, height);
 
