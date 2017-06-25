@@ -140,6 +140,9 @@ function aa(f, width, height) {
 const hsplice = (a, b) => (x, y) => (y > 0 ? a : b)(x, y)
 
 const imgfun = (imgData, width, height) => (x, y) => {
+  if (x < 0 || x>= 1 || y < 0 || y >= 1) {
+    return [0, 0, 0];
+  }
   const ix = Math.floor(x*width);
   const iy = Math.floor(y*height);
   const offset = (iy * width + ix) * 4;
